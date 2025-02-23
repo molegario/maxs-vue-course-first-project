@@ -1,10 +1,12 @@
 <template>
   <li>
-    <h2>{{ friend.name }}</h2>
-    <button @click="toggleDetails">{{ toggleText() }}</button>
+    <h2>{{ name }}{{ isFavorite ? ' (favorited)' : '' }}</h2>
+    <p><button @click="toggleDetails">{{ toggleText() }}</button></p>
+    <p><button @click="removeFriend">Unfriend</button></p>
+    <p><button @click="toggleFavorite">Toggle Favorite</button></p>
     <ul v-if="detailsAreVisible">
-      <li><strong>Phone:</strong> {{ friend.phone }}</li>
-      <li><strong>Email:</strong> {{ friend.email }}</li>
+      <li><strong>Phone:</strong> {{ phone }}</li>
+      <li><strong>Email:</strong> {{ email }}</li>
     </ul>
   </li>
 </template>
@@ -12,7 +14,25 @@
   export default {
     name: 'friend-contact',
     props: {
-      friend: Object,
+      idx: String,
+      name: String,
+      phone: String,
+      email: String,
+      isFavorite: Boolean,
+    },
+    emits: {
+      'toggle-favorite': function(friendId) {
+        if (typeof friendId === 'string') {
+          return true;
+        }
+        return false;
+      },
+      'remove-friend': function(friendId) {
+        if (typeof friendId === 'string') {
+          return true;
+        }
+        return false;
+      },
     },
     data () {
       return {
@@ -25,6 +45,12 @@
       },
       toggleText() {
         return this.detailsAreVisible ? 'Hide Details' : 'Show Details';
+      },
+      toggleFavorite() {
+        this.$emit('toggle-favorite', this.idx);
+      },
+      removeFriend() {
+        this.$emit('remove-friend', this.idx);
       },
     },
   }
